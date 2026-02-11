@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>乒乓球登录 - Ping Pong Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 50%, #fff3e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 装饰性乒乓球 */
+        .ping-pong-ball {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0);
+            border-radius: 50%;
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.15),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.1),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.8);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .ball-1 {
+            top: 5%;
+            left: 10%;
+            width: 50px;
+            height: 50px;
+            animation-delay: 0s;
+        }
+
+        .ball-2 {
+            top: 15%;
+            right: 8%;
+            width: 70px;
+            height: 70px;
+            animation-delay: 1s;
+        }
+
+        .ball-3 {
+            bottom: 10%;
+            left: 5%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 2s;
+        }
+
+        .ball-4 {
+            bottom: 20%;
+            right: 10%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* 登录容器 */
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 品牌Logo区域 */
+        .brand-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .brand-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #42a5f5, #1976d2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+            position: relative;
+        }
+
+        .brand-icon::before {
+            content: '🏓';
+            font-size: 45px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1976d2;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            color: #78909c;
+            font-weight: 500;
+        }
+
+        /* 表单区域 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #455a64;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 50px;
+            padding: 0 50px 0 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 15px;
+            color: #37474f;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #42a5f5;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(66, 165, 245, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #bdbdbd;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #90a4ae;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus + .input-icon {
+            color: #42a5f5;
+        }
+
+        /* 记住我 & 忘记密码 */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #bdbdbd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .remember-checkbox.checked {
+            background: #42a5f5;
+            border-color: #42a5f5;
+        }
+
+        .remember-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .remember-label {
+            font-size: 14px;
+            color: #78909c;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: #42a5f5;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #1976d2;
+        }
+
+        /* 登录按钮 */
+        .login-button {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, #42a5f5, #1976d2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .login-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        /* 分割线 */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #bdbdbd;
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        /* 第三方登录 */
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .social-button {
+            width: 55px;
+            height: 55px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+        }
+
+        .social-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            border-color: #42a5f5;
+        }
+
+        /* 注册链接 */
+        .register-link {
+            text-align: center;
+            font-size: 14px;
+            color: #78909c;
+        }
+
+        .register-link a {
+            color: #42a5f5;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #1976d2;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 380px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .brand-title {
+                font-size: 24px;
+            }
+
+            .form-input {
+                height: 48px;
+            }
+
+            .login-button {
+                height: 50px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 装饰性乒乓球 -->
+    <div class="ping-pong-ball ball-1"></div>
+    <div class="ping-pong-ball ball-2"></div>
+    <div class="ping-pong-ball ball-3"></div>
+    <div class="ping-pong-ball ball-4"></div>
+
+    <div class="login-container">
+        <!-- 品牌Logo区域 -->
+        <div class="brand-section">
+            <div class="brand-icon"></div>
+            <h1 class="brand-title">乒乓世界</h1>
+            <p class="brand-subtitle">专业的乒乓球运动平台</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <form>
+            <div class="form-group">
+                <label class="form-label">用户名</label>
+                <div class="input-wrapper">
+                    <input type="text" class="form-input" placeholder="请输入用户名" required>
+                    <span class="input-icon">👤</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <div class="input-wrapper">
+                    <input type="password" class="form-input" placeholder="请输入密码" required>
+                    <span class="input-icon">🔒</span>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <div class="remember-me" onclick="toggleRemember()">
+                    <div class="remember-checkbox" id="rememberCheckbox"></div>
+                    <span class="remember-label">记住我</span>
+                </div>
+                <a href="#" class="forgot-password">忘记密码?</a>
+            </div>
+
+            <button type="submit" class="login-button">立即登录</button>
+        </form>
+
+        <!-- 分割线 -->
+        <div class="divider">
+            <span>或使用以下方式登录</span>
+        </div>
+
+        <!-- 第三方登录 -->
+        <div class="social-login">
+            <div class="social-button" title="微信登录">
+                💬
+            </div>
+            <div class="social-button" title="QQ登录">
+                🐧
+            </div>
+            <div class="social-button" title="微博登录">
+                📱
+            </div>
+        </div>
+
+        <!-- 注册链接 -->
+        <p class="register-link">
+            还没有账号? <a href="#">立即注册</a>
+        </p>
+    </div>
+
+    <script>
+        // 记住我切换功能
+        function toggleRemember() {
+            const checkbox = document.getElementById('rememberCheckbox');
+            checkbox.classList.toggle('checked');
+        }
+
+        // 表单提交
+        document.querySelector('.login-button').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const username = document.querySelector('input[type="text"]').value;
+            const password = document.querySelector('input[type="password"]').value;
+
+            if (username && password) {
+                // 模拟登录加载
+                this.innerHTML = '登录中...';
+                this.style.opacity = '0.8';
+
+                setTimeout(() => {
+                    alert('登录成功!欢迎来到乒乓世界!');
+                    this.innerHTML = '立即登录';
+                    this.style.opacity = '1';
+                }, 1500);
+            } else {
+                alert('请填写完整的登录信息');
+            }
+        });
+
+        // 输入框聚焦动画
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // 社交登录按钮点击
+        document.querySelectorAll('.social-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const platform = this.getAttribute('title');
+                alert(`正在跳转到${platform}...`);
+            });
+        });
+
+        // 忘记密码
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('忘记密码功能开发中,请联系客服重置密码');
+        });
+
+        // 注册链接
+        document.querySelector('.register-link a').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('跳转到注册页面...');
+        });
+    </script>
+</body>
+</html>

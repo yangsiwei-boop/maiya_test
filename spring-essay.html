@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>春天的作文 - Spring Essay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f1f8e9 50%, #fff9c4 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 春天装饰元素 - 花瓣 */
+        .petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .petal-1 {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at 30% 30%, #ffcdd2, #f48fb1);
+            border-radius: 50% 0 50% 50%;
+            top: -20px;
+            animation: fall-petal-1 15s linear infinite;
+        }
+
+        .petal-2 {
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle at 30% 30%, #fff9c4, #fff59d);
+            border-radius: 50% 50% 0 50%;
+            top: -15px;
+            animation: fall-petal-2 12s linear infinite;
+            animation-delay: 3s;
+        }
+
+        .petal-3 {
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 30% 30%, #c8e6c9, #a5d6a7);
+            border-radius: 0 50% 50% 50%;
+            top: -18px;
+            animation: fall-petal-3 18s linear infinite;
+            animation-delay: 6s;
+        }
+
+        @keyframes fall-petal-1 {
+            0% {
+                left: -5%;
+                transform: rotate(0deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                left: 105%;
+                transform: rotate(360deg) translateY(100vh);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes fall-petal-2 {
+            0% {
+                left: 105%;
+                transform: rotate(0deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                left: -5%;
+                transform: rotate(-360deg) translateY(100vh);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes fall-petal-3 {
+            0% {
+                left: 40%;
+                transform: rotate(0deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                left: 60%;
+                transform: rotate(180deg) translateY(100vh);
+                opacity: 0.3;
+            }
+        }
+
+        /* 蝴蝶装饰 */
+        .butterfly {
+            position: absolute;
+            font-size: 30px;
+            animation: fly-butterfly 20s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .butterfly-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .butterfly-2 {
+            top: 20%;
+            right: 8%;
+            animation-delay: 5s;
+        }
+
+        .butterfly-3 {
+            bottom: 30%;
+            left: 10%;
+            animation-delay: 10s;
+        }
+
+        @keyframes fly-butterfly {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(50px, 30px) rotate(10deg);
+            }
+            50% {
+                transform: translate(20px, 60px) rotate(-5deg);
+            }
+            75% {
+                transform: translate(60px, 20px) rotate(5deg);
+            }
+        }
+
+        /* 主容器 */
+        .essay-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 标题区域 */
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #f8bbd9;
+        }
+
+        .main-title {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ec407a, #ab47bc, #42a5f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #78909c;
+            font-weight: 500;
+        }
+
+        .decorative-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f48fb1, transparent);
+        }
+
+        .flower-icon {
+            font-size: 28px;
+        }
+
+        /* 作文内容 */
+        .essay-content {
+            font-size: 18px;
+            line-height: 2;
+            color: #37474f;
+            text-align: justify;
+        }
+
+        .paragraph {
+            margin-bottom: 30px;
+            text-indent: 2em;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .paragraph::before {
+            content: '🌸';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 16px;
+        }
+
+        .paragraph:first-child::before {
+            content: '🌷';
+        }
+
+        .paragraph:nth-child(3)::before {
+            content: '🌺';
+        }
+
+        .paragraph:nth-child(4)::before {
+            content: '🍃';
+        }
+
+        .paragraph:nth-child(5)::before {
+            content: '🌼';
+        }
+
+        /* 重点词汇 */
+        .highlight {
+            background: linear-gradient(120deg, #fff9c4 0%, #ffeb3b 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* 作者信息 */
+        .author-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px dashed #e1bee7;
+            text-align: center;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f48fb1, #ce93d8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 5px 15px rgba(244, 143, 177, 0.4);
+        }
+
+        .author-details {
+            text-align: left;
+        }
+
+        .author-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #c2185b;
+            margin-bottom: 5px;
+        }
+
+        .essay-date {
+            font-size: 14px;
+            color: #90a4ae;
+        }
+
+        /* 互动按钮 */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-like {
+            background: linear-gradient(135deg, #ffcdd2, #f48fb1);
+            color: #c2185b;
+            box-shadow: 0 5px 15px rgba(244, 143, 177, 0.4);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            color: #2e7d32;
+            box-shadow: 0 5px 15px rgba(165, 214, 167, 0.4);
+        }
+
+        .btn-collect {
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
+            color: #f57f17;
+            box-shadow: 0 5px 15px rgba(255, 245, 157, 0.4);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .action-btn.liked {
+            background: linear-gradient(135deg, #c2185b, #e91e63);
+            color: white;
+        }
+
+        .action-btn.liked::after {
+            content: ' ✓';
+        }
+
+        /* 底部装饰 */
+        .footer-decoration {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce4ec, #f1f8e9);
+            border-radius: 20px;
+        }
+
+        .spring-quote {
+            font-size: 16px;
+            color: #6a1b9a;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .essay-container {
+                padding: 30px 25px;
+            }
+
+            .main-title {
+                font-size: 32px;
+            }
+
+            .essay-content {
+                font-size: 16px;
+                line-height: 1.8;
+            }
+
+            .paragraph {
+                padding-left: 0;
+                text-indent: 0;
+                margin-bottom: 25px;
+            }
+
+            .paragraph::before {
+                position: static;
+                display: inline-block;
+                margin-right: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-btn {
+                justify-content: center;
+            }
+        }
+
+        /* 太阳装饰 */
+        .sun {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #fff59d, #ffb300);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ffb300, 0 0 80px #ffc107;
+            animation: sun-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes sun-glow {
+            0%, 100% {
+                box-shadow: 0 0 40px #ffb300, 0 0 80px #ffc107;
+            }
+            50% {
+                box-shadow: 0 0 60px #ffb300, 0 0 100px #ffc107;
+            }
+        }
+
+        /* 云朵装饰 */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: float-cloud 30s linear infinite;
+        }
+
+        .cloud-1 {
+            width: 120px;
+            height: 40px;
+            top: 15%;
+            left: -120px;
+        }
+
+        .cloud-2 {
+            width: 100px;
+            height: 35px;
+            top: 25%;
+            left: -100px;
+            animation-delay: 15s;
+        }
+
+        @keyframes float-cloud {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(100vw + 200px));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 花瓣装饰 -->
+    <div class="petal petal-1"></div>
+    <div class="petal petal-2"></div>
+    <div class="petal petal-3"></div>
+    <div class="petal petal-1" style="animation-delay: 4s; left: 20%;"></div>
+    <div class="petal petal-2" style="animation-delay: 7s; left: 60%;"></div>
+    <div class="petal petal-3" style="animation-delay: 9s; left: 80%;"></div>
+
+    <!-- 蝴蝶装饰 -->
+    <div class="butterfly butterfly-1">🦋</div>
+    <div class="butterfly butterfly-2">🦋</div>
+    <div class="butterfly butterfly-3">🦋</div>
+
+    <!-- 云朵 -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <div class="essay-container">
+        <!-- 太阳 -->
+        <div class="sun"></div>
+
+        <!-- 标题区域 -->
+        <div class="header-section">
+            <h1 class="main-title">春 天 的 诗</h1>
+            <p class="subtitle">拥抱温暖,感受生命的美好</p>
+            <div class="decorative-line">
+                <div class="line"></div>
+                <span class="flower-icon">🌸 🌷 🌺 🌼 🌻</span>
+                <div class="line"></div>
+            </div>
+        </div>
+
+        <!-- 作文内容 -->
+        <div class="essay-content">
+            <p class="paragraph">
+                冬日的<span class="highlight">寒意</span>渐渐褪去,春天的脚步悄然而至。清晨,当第一缕阳光透过薄薄的云层洒向大地,我推开窗,迎面而来的是湿润清新的空气,带着泥土的芬芳和花草的清香。远处的山坡上,嫩绿的新芽正从沉睡中苏醒,仿佛在向世界宣告:<span class="highlight">春天来了</span>!
+            </p>
+
+            <p class="paragraph">
+                走进公园,映入眼帘的是一片绚烂的花海。粉色的<span class="highlight">樱花</span>如云似霞,在微风中轻轻摇曳,花瓣如雪花般飘落,铺成一条粉色的地毯。黄色的迎春花像一个个小喇叭,吹奏着春天的赞歌。紫色的玉兰花高贵典雅,在枝头傲然绽放。红色的郁金香热情似火,展示着生命的活力。每一朵花都在用自己的方式,诉说着春天的美好。
+            </p>
+
+            <p class="paragraph">
+                小河边的柳树也换上了新装,细长的柳枝像少女的秀发,在春风中轻轻摆动。河水清澈见底,可以看到小鱼在水草间穿梭嬉戏。偶尔,一两只<span class="highlight">燕子</span>掠过水面,留下一圈圈涟漪,仿佛在为春天伴奏。岸边的草地上,孩子们在追逐嬉戏,他们的笑声与鸟儿的歌声交织在一起,构成了一幅生机勃勃的画面。
+            </p>
+
+            <p class="paragraph">
+                农田里,农民伯伯开始了一年的辛勤劳作。他们播种希望,期待着秋天的收获。春雨贵如油,细雨滋润着干渴的土地,给农作物带来了生机。这让我想起了一句诗:"<span class="highlight">好雨知时节,当春乃发生</span>。"春天的雨是温柔的母亲,用她的乳汁哺育着大地的每一个生命。
+            </p>
+
+            <p class="paragraph">
+                春天是<span class="highlight">希望的季节</span>,是生命的象征。它告诉我们,无论经历了怎样的严寒和磨难,温暖和美好终将到来。让我们拥抱春天,珍惜这美好的时光,用热情和努力去创造属于自己的精彩人生!愿我们的生命如春天般绚丽多彩,充满活力与希望!
+            </p>
+        </div>
+
+        <!-- 作者信息 -->
+        <div class="author-section">
+            <div class="author-info">
+                <div class="author-avatar">✍️</div>
+                <div class="author-details">
+                    <div class="author-name">小作家 · 明明</div>
+                    <div class="essay-date">2024年春季创作</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 互动按钮 -->
+        <div class="action-buttons">
+            <button class="action-btn btn-like" id="likeBtn" onclick="toggleLike()">
+                <span>❤️</span> 点赞
+            </button>
+            <button class="action-btn btn-share" onclick="shareEssay()">
+                <span>📤</span> 分享
+            </button>
+            <button class="action-btn btn-collect" id="collectBtn" onclick="toggleCollect()">
+                <span>⭐</span> 收藏
+            </button>
+        </div>
+
+        <!-- 底部装饰 -->
+        <div class="footer-decoration">
+            <p class="spring-quote">
+                "春天不播种,夏天就不生长,秋天就不能收割,冬天就不能品尝。" —— 海德
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 点赞功能
+        let liked = false;
+        function toggleLike() {
+            const btn = document.getElementById('likeBtn');
+            liked = !liked;
+
+            if (liked) {
+                btn.classList.add('liked');
+                btn.innerHTML = '<span>❤️</span> 已点赞';
+                // 创建爱心动画
+                createHeartAnimation();
+            } else {
+                btn.classList.remove('liked');
+                btn.innerHTML = '<span>❤️</span> 点赞';
+            }
+        }
+
+        // 爱心动画效果
+        function createHeartAnimation() {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.style.cssText = `
+                        position: fixed;
+                        font-size: 20px;
+                        left: ${Math.random() * 80 + 10}%;
+                        top: 80%;
+                        z-index: 1000;
+                        animation: flyUp 2s ease-out forwards;
+                        pointer-events: none;
+                    `;
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 2000);
+                }, i * 100);
+            }
+
+            // 添加飞升动画
+            if (!document.getElementById('heart-animation-style')) {
+                const style = document.createElement('style');
+                style.id = 'heart-animation-style';
+                style.textContent = `
+                    @keyframes flyUp {
+                        0% {
+                            transform: translateY(0) scale(1);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translateY(-300px) scale(0.5);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // 收藏功能
+        let collected = false;
+        function toggleCollect() {
+            const btn = document.getElementById('collectBtn');
+            collected = !collected;
+
+            if (collected) {
+                btn.style.background = 'linear-gradient(135deg, #f57f17, #ff9800)';
+                btn.style.color = 'white';
+                btn.innerHTML = '<span>⭐</span> 已收藏';
+                showToast('收藏成功!');
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.innerHTML = '<span>⭐</span> 收藏';
+                showToast('已取消收藏');
+            }
+        }
+
+        // 分享功能
+        function shareEssay() {
+            // 创建分享提示
+            const shareText = `🌸 春天的诗 🌸\n\n一篇关于春天的优美作文,带你感受春天的美好与希望!\n\n${window.location.href}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: '春天的诗',
+                    text: '一篇关于春天的优美作文',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // 复制到剪贴板
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('分享链接已复制到剪贴板!');
+                }).catch(() => {
+                    showToast('分享功能开发中...');
+                });
+            }
+        }
+
+        // 提示消息
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-size: 14px;
+                z-index: 10000;
+                animation: slideDown 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+
+            // 添加动画样式
+            if (!document.getElementById('toast-animation-style')) {
+                const style = document.createElement('style');
+                style.id = 'toast-animation-style';
+                style.textContent = `
+                    @keyframes slideDown {
+                        from {
+                            opacity: 0;
+                            transform: translateX(-50%) translateY(-20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(-50%) translateY(0);
+                        }
+                    }
+                    @keyframes slideUp {
+                        from {
+                            opacity: 1;
+                            transform: translateX(-50%) translateY(0);
+                        }
+                        to {
+                            opacity: 0;
+                            transform: translateX(-50%) translateY(-20px);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            const container = document.querySelector('.essay-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(30px)';
+            container.style.transition = 'all 0.8s ease';
+
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // 段落渐入动画
+        const paragraphs = document.querySelectorAll('.paragraph');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        paragraphs.forEach((p, index) => {
+            p.style.opacity = '0';
+            p.style.transform = 'translateX(-30px)';
+            p.style.transition = `all 0.6s ease ${index * 0.1}s`;
+            observer.observe(p);
+        });
+    </script>
+</body>
+</html>

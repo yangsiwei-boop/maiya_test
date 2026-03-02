@@ -1,23 +1,67 @@
 # 购物中心后端API
 
-基于 FastAPI 的购物中心后端服务。
+基于 FastAPI + MySQL 的购物中心后端服务。
 
 ## 技术栈
 
 - FastAPI - Web框架
 - SQLAlchemy - ORM
-- SQLite - 数据库
+- MySQL - 数据库
+- PyMySQL - MySQL驱动
 - Pydantic - 数据验证
 - JWT - 认证
+- Alembic - 数据库迁移
 
-## 安装依赖
+## 环境要求
+
+- Python 3.8+
+- MySQL 5.7+ / MySQL 8.0+
+
+## 安装步骤
+
+### 1. 安装MySQL数据库
+
+确保已安装MySQL数据库服务。
+
+### 2. 创建数据库
+
+使用提供的SQL脚本创建数据库和表：
+
+```bash
+# 方法1：使用命令行
+mysql -u root -p < init_mysql.sql
+
+# 方法2：登录MySQL后执行
+mysql -u root -p
+source init_mysql.sql;
+```
+
+### 3. 配置环境变量
+
+复制 `.env.example` 为 `.env` 并修改配置：
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件，修改数据库连接信息：
+
+```env
+MYSQL_USER=root
+MYSQL_PASSWORD=你的MySQL密码
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_DATABASE=shopping_mall
+```
+
+### 4. 安装Python依赖
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-## 初始化数据库
+### 5. 初始化测试数据（可选）
 
 ```bash
 python init_data.py
@@ -35,6 +79,15 @@ python main.py
 
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+## 测试数据库连接
+
+在Python中测试MySQL连接：
+
+```python
+from database import test_connection
+test_connection()
 ```
 
 ## API文档

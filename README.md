@@ -105,9 +105,11 @@
 ### 后端
 - **FastAPI** - 现代化的Python Web框架
 - **SQLAlchemy** - ORM工具
-- **SQLite** - 轻量级数据库
+- **MySQL** - 企业级关系数据库
+- **PyMySQL** - MySQL数据库驱动
 - **Pydantic** - 数据验证
 - **JWT** - 用户认证
+- **Alembic** - 数据库迁移工具
 
 ### 前端
 - **Vue 3** - 渐进式JavaScript框架
@@ -131,13 +133,50 @@
 
 ## 🚀 快速开始
 
+### 前置要求
+- Python 3.8+
+- Node.js 16+
+- MySQL 5.7+ 或 MySQL 8.0+
+
 ### 后端设置
+
+#### 1. 安装MySQL并创建数据库
+
+```bash
+# 登录MySQL
+mysql -u root -p
+
+# 执行初始化脚本
+source /path/to/backend/init_mysql.sql;
+
+# 或使用命令行直接执行
+mysql -u root -p < /path/to/backend/init_mysql.sql
+```
+
+#### 2. 配置环境变量
+
 ```bash
 cd backend
+cp .env.example .env
+```
+
+编辑 `.env` 文件，修改MySQL连接信息：
+```env
+MYSQL_USER=root
+MYSQL_PASSWORD=你的MySQL密码
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_DATABASE=shopping_mall
+```
+
+#### 3. 安装依赖并运行
+
+```bash
 pip install -r requirements.txt
-python init_data.py
+python init_data.py  # 可选：初始化测试数据
 python main.py
 ```
+
 后端服务: http://localhost:8000
 API文档: http://localhost:8000/docs
 

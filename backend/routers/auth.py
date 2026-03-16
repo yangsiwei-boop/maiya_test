@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import jwt
 import random
+from typing import Dict
 
 from database import get_db
 from models import User
@@ -18,6 +19,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = "your-secret-key-change-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30天
+
+# 验证码存储（生产环境应使用Redis）
+verification_codes: Dict[str, Dict] = {}
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -100,7 +104,35 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 async def login(user_data: UserLogin, db: Session = Depends(get_db)):
-    # 查找用户
+    # 第一步：验证验证码
+    if user_data.phone not in verification_codes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="请先获取验证码"
+        )
+
+    stored_code_data = verification_codes[user_data.phone]
+
+    # 检查验证码是否过期
+    if datetime.utcnow() > stored_code_data["expires"]:
+        # 删除过期的验证码
+        del verification_codes[user_data.phone]
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="验证码已过期，请重新获取"
+        )
+
+    # 验证验证码是否正确
+    if user_data.code != stored_code_data["code"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="验证码错误"
+        )
+
+    # 验证码验证通过，删除已使用的验证码
+    del verification_codes[user_data.phone]
+
+    # 第二步：验证账号密码
     user = db.query(User).filter(User.phone == user_data.phone).first()
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(
@@ -108,7 +140,7 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
             detail="手机号或密码错误"
         )
 
-    # 生成Token
+    # 第三步：生成Token
     access_token = create_access_token(
         data={"sub": user.id},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -122,11 +154,40 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
 
 @router.post("/send-code")
 async def send_code(phone: str, db: Session = Depends(get_db)):
-    # 模拟发送验证码
+    """
+    发送验证码
+    - 生成6位随机验证码
+    - 验证码有效期5分钟
+    - 生产环境应调用短信服务API发送
+    """
+    # 检查发送频率（60秒内只能发送一次）
+    if phone in verification_codes:
+        last_sent_time = verification_codes[phone]["created"]
+        if (datetime.utcnow() - last_sent_time).total_seconds() < 60:
+            remaining = 60 - int((datetime.utcnow() - last_sent_time).total_seconds())
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"验证码发送过于频繁，请{remaining}秒后再试"
+            )
+
+    # 生成6位随机验证码
     code = str(random.randint(100000, 999999))
+
+    # 保存验证码，设置5分钟过期
+    verification_codes[phone] = {
+        "code": code,
+        "created": datetime.utcnow(),
+        "expires": datetime.utcnow() + timedelta(minutes=5)
+    }
+
     # 在实际应用中，这里应该调用短信服务API发送验证码
+    # 例如: send_sms(phone, code)
     # 这里我们直接返回验证码用于测试
-    return {"message": "验证码发送成功", "code": code}
+    return {
+        "message": "验证码发送成功",
+        "code": code,  # 生产环境应移除此字段
+        "expires_in": 300  # 5分钟有效期
+    }
 
 
 @router.get("/me", response_model=UserResponse)

@@ -17,6 +17,7 @@ class UserCreate(UserBase):
 class UserLogin(BaseModel):
     phone: str
     password: str
+    code: str  # 验证码必填
 
 
 class UserResponse(UserBase):

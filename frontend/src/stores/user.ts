@@ -21,8 +21,8 @@ export const useUserStore = defineStore('user', () => {
   }
 
   // 登录
-  const login = async (phone: string, password: string) => {
-    const response = await authApi.login({ phone, password })
+  const login = async (phone: string, password: string, code: string) => {
+    const response = await authApi.login({ phone, password, code })
 
     token.value = response.access_token
     user.value = response.user

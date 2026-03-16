@@ -36,6 +36,28 @@
             />
           </el-form-item>
 
+          <el-form-item prop="code">
+            <div class="code-input-wrapper">
+              <el-input
+                v-model="loginForm.code"
+                placeholder="请输入验证码"
+                prefix-icon="Key"
+                size="large"
+                maxlength="6"
+              />
+              <el-button
+                type="primary"
+                size="large"
+                :disabled="countdown > 0"
+                :loading="sendingCode"
+                @click="handleSendCode"
+                class="send-code-btn"
+              >
+                {{ countdown > 0 ? `${countdown}秒后重试` : '获取验证码' }}
+              </el-button>
+            </div>
+          </el-form-item>
+
           <el-form-item prop="password">
             <el-input
               v-model="loginForm.password"
@@ -82,6 +104,7 @@ import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../../stores/user'
 import { ElMessage } from 'element-plus'
+import axios from 'axios'
 
 const router = useRouter()
 const route = useRoute()
@@ -90,10 +113,13 @@ const userStore = useUserStore()
 const loginFormRef = ref()
 const loading = ref(false)
 const rememberMe = ref(false)
+const sendingCode = ref(false)
+const countdown = ref(0)
 
 const loginForm = reactive({
   phone: '13800138000',
-  password: '123456'
+  password: '123456',
+  code: ''
 })
 
 const loginRules = {
@@ -101,19 +127,58 @@ const loginRules = {
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
   ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { len: 6, message: '验证码必须是6位', trigger: 'blur' }
+  ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
   ]
 }
 
+// 发送验证码
+const handleSendCode = async () => {
+  // 先验证手机号
+  try {
+    await loginFormRef.value.validateField('phone')
+  } catch (error) {
+    return
+  }
+
+  try {
+    sendingCode.value = true
+    const response = await axios.post('/api/auth/send-code', null, {
+      params: { phone: loginForm.phone }
+    })
+
+    ElMessage.success(`验证码已发送: ${response.data.code}`)
+
+    // 开始倒计时
+    countdown.value = 60
+    const timer = setInterval(() => {
+      countdown.value--
+      if (countdown.value <= 0) {
+        clearInterval(timer)
+      }
+    }, 1000)
+  } catch (error: any) {
+    ElMessage.error(error.response?.data?.detail || '验证码发送失败')
+  } finally {
+    sendingCode.value = false
+  }
+}
+
+// 登录
 const handleLogin = async () => {
   try {
     const valid = await loginFormRef.value.validate()
     if (!valid) return
 
     loading.value = true
-    await userStore.login(loginForm.phone, loginForm.password)
+
+    // 调用登录接口，传入手机号、密码和验证码
+    await userStore.login(loginForm.phone, loginForm.password, loginForm.code)
 
     ElMessage.success('登录成功')
 
@@ -334,5 +399,21 @@ const goHome = () => {
   text-align: center;
   font-size: 13px;
   color: #999;
+}
+
+/* 验证码输入框样式 */
+.code-input-wrapper {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.code-input-wrapper .el-input {
+  flex: 1;
+}
+
+.send-code-btn {
+  white-space: nowrap;
+  min-width: 120px;
 }
 </style>

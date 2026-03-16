@@ -4,7 +4,7 @@ import type { User, Category, Product, CartItem, Address, Order } from '../types
 // 认证相关API
 export const authApi = {
   // 登录
-  login: (data: { phone: string; password: string }) =>
+  login: (data: { phone: string; password: string; code: string }) =>
     request.post<any, { access_token: string; user: User }>('/api/auth/login', data),
 
   // 注册
@@ -17,7 +17,7 @@ export const authApi = {
 
   // 发送验证码
   sendCode: (phone: string) =>
-    request.post<any, { code: string }>('/api/auth/send-code', null, { params: { phone } })
+    request.post<any, { code: string; message: string; expires_in: number }>('/api/auth/send-code', null, { params: { phone } })
 }
 
 // 商品相关API
